@@ -23,7 +23,7 @@ def run_simple_linear_regression(df, predictor, response):
 
     # Plot
     plt.scatter(X, y, color="blue", label="True values")
-    plt.plot(X, y_pred, color="red", linewidth=2, label="Prediction line")
+    plt.plot(X, y_pred, color="red", linewidth=2, linestyle='dotted', label="Prediction line")
     plt.xlabel(predictor)
     plt.ylabel(response)
     plt.title(f"{predictor} vs {response} (Simple Linear Regression)")
@@ -56,7 +56,7 @@ def run_multiple_linear_regression(df, response, drop_cols=None):
     print("Number of features after encoding:", X.shape[1])
 
     # Plot predicted vs actual prices for the test set
-    plt.scatter(y_test, y_pred, color="purple", alpha=0.6)
+    plt.scatter(y_test, y_pred, color="green", alpha=0.6)
     plt.xlabel("Actual Price")
     plt.ylabel("Predicted Price")
     plt.title("Multiple Linear Regression: Actual vs Predicted Price")
@@ -77,7 +77,7 @@ def run_multiple_linear_regression(df, response, drop_cols=None):
     return model, X.columns
 
 
-# --- Main workflow
+### Main workflow
 def main():
     # Load dataset
     df = pd.read_csv("cars.csv")
