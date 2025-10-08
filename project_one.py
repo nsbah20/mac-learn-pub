@@ -10,18 +10,18 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import StandardScaler
 
 # Load the dataset
-data = pd.read_csv('data.csv')
+data = pd.read_csv('sole_survivor_past.csv')
 print("Data loaded successfully.")
 print(data.head())
 print(data.info())
 print(data.describe())
 print(data.isnull().sum())
-data = data.dropna()
+#data = data.dropna()
 print("Missing values handled.")
 
 # Exploratory Data Analysis (EDA)
 plt.figure(figsize=(10, 6))
-sns.pairplot(data)
+sns.scatterplot(data)
 plt.show()
 plt.figure(figsize=(10, 6))
 sns.heatmap(data.corr(), annot=True, cmap='coolwarm')
