@@ -17,19 +17,18 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 from sklearn.model_selection import train_test_split
 
-# -----------------------------
+
 # 1) Load data
-# -----------------------------
+
 DATA_PAST = Path("sole_survivor_past.csv")
 DATA_NEXT = Path("sole_survivor_next.csv")
 
 past = pd.read_csv(DATA_PAST)
 next_season = pd.read_csv(DATA_NEXT)
 
-# -----------------------------
+
 # 2) Quick EDA / sanity checks
-# -----------------------------
-# Print shapes and head (kept brief)
+# Print shapes and head 
 print("Past shape:", past.shape)
 print("Next shape:", next_season.shape)
 print("\nColumns:", list(past.columns))
@@ -37,9 +36,9 @@ print("\nColumns:", list(past.columns))
 # Ensure expected columns exist
 assert "SurvivalScore" in past.columns, "Training data must include SurvivalScore."
 
-# -----------------------------
+
 # 3) Prepare features/target
-# -----------------------------
+
 feature_cols = [c for c in past.columns if c not in ["Name", "SurvivalScore"]]
 X = past[feature_cols].values
 y = past["SurvivalScore"].values
@@ -47,38 +46,40 @@ y = past["SurvivalScore"].values
 X_next = next_season[feature_cols].values
 names_next = next_season["Name"].values if "Name" in next_season.columns else np.arange(len(next_season))
 
-# -----------------------------
+
 # 4) Model: Standardize + Linear Regression
 #    (Standardization makes coefficients more interpretable and model more stable)
-# -----------------------------
+
 model = Pipeline([
     ("scaler", StandardScaler()),
     ("lr", LinearRegression())
 ])
 
-# -----------------------------
+
 # 5) Cross-validated R^2 to evaluate how well initial ratings explain SurvivalScore
-# -----------------------------
+
 cv = KFold(n_splits=5, shuffle=True, random_state=42)
 cv_r2 = cross_val_score(model, X, y, cv=cv, scoring="r2")
 print("\nCross-validated R^2 scores:", np.round(cv_r2, 3))
-print("Mean CV R^2:", cv_r2.mean().round(3), "±", cv_r2.std().round(3))
+print("Mean CV R^2:", round(cv_r2.mean(), 3), "±", round(cv_r2.std(), 3))
+
 
 # Also train/validate split for simple error metrics
-X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.25, random_state=42)
-model.fit(X_tr, y_tr)
-y_pred = model.predict(X_te)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
 print("\nHoldout metrics:")
-print("  R^2 :", r2_score(y_te, y_pred).round(3))
-print("  MAE :", mean_absolute_error(y_te, y_pred).round(3))
-print("  RMSE:", np.sqrt(mean_squared_error(y_te, y_pred)).round(3))
+print("  R^2 :", round(r2_score(y_test, y_pred), 3))
+print("  MAE :", round(mean_absolute_error(y_test, y_pred), 3))
+print("  RMSE:", round(np.sqrt(mean_squared_error(y_test, y_pred)), 3))
 
-# -----------------------------
+
+
 # 6) Simple plots (saved as PNGs)
-# -----------------------------
+
 # Scatter: True vs Pred (holdout)
 plt.figure()
-plt.scatter(y_te, y_pred)
+plt.scatter(y_test, y_pred)
 plt.xlabel("Actual SurvivalScore")
 plt.ylabel("Predicted SurvivalScore")
 plt.title("Actual vs Predicted (Holdout)")
@@ -97,9 +98,9 @@ plt.tight_layout()
 plt.savefig("plot_feature_correlations.png", dpi=150)
 plt.close()
 
-# -----------------------------
+
 # 7) Fit on all past data and predict next season
-# -----------------------------
+
 model.fit(X, y)
 pred_next = model.predict(X_next)
 
