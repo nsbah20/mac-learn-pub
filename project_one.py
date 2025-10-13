@@ -21,6 +21,7 @@ from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 # -------- CONFIG --------
 FEATURE_MODE   = "multiple"     # "simple" or "multiple"
 SINGLE_FEATURE = "Leadership"   # used only when FEATURE_MODE == "simple"
+#Comment out below line if you don't want to use Ridge regression
 RIDGE_ALPHA    = 1.0            # try 0.1, 0.5, 1.0 etc.
 
 # -------- DATA LOADING --------
