@@ -162,10 +162,13 @@ def predict_next(model, X, y, X_next, names_next):
 # -------- MAIN --------
 def main():
     past, next_season = load_data()
+    import pdb; pdb.set_trace()  # Check data loading: shapes, columns
     feature_cols, X, y, X_next, names_next = prepare_data(past, next_season)
+    import pdb; pdb.set_trace()  # Inspect feature_cols, X, y
     model = build_model(alpha=RIDGE_ALPHA)
 
     X_train, y_train, y_test, y_pred, fitted_holdout_model = evaluate_model(model, X, y, feature_cols)
+    import pdb; pdb.set_trace()  # Inspect model coefficients, predictions
     save_plots(past, feature_cols, y_test, y_pred, X_train=X_train, y_train=y_train, model=fitted_holdout_model)
     predict_next(model, X, y, X_next, names_next)
 
